@@ -1,3 +1,4 @@
+;sum of square of largest two numbers
 (define (sum-of-square x y z)
   (cond ( (> x y)
             (if (> y z)

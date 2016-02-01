@@ -1,3 +1,6 @@
+;it is another version of 1-01-8.scm
+;it's procedures are not nested
+
 
 (define (new-if predicate then-clause else-clause)
     (cond (predicate then-clause)

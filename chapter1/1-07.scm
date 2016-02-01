@@ -1,3 +1,4 @@
+;same 1-06.scm but little improvement
 (define (sqrt-iter guess x)
   (if (good-enough? guess x)
         guess

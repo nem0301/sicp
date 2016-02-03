@@ -1,0 +1,28 @@
+(define (timed-prime-test n)
+  (newline)
+  (display n)
+  (start-prime-test n (runtime) )
+  )
+
+(define (timed-prime-test2 n)
+  (newline)
+  (display n)
+  (start-prime-test2 n (runtime) )
+  )
+
+(define (start-prime-test n start-time)
+  (if (prime? n)
+    (report-prime (- (runtime) start-time) )
+    )
+  )
+
+(define (start-prime-test2 n start-time)
+  (if (fast-prime? n 10)
+    (report-prime (- (runtime) start-time) )
+    )
+  )
+
+(define (report-prime elapsed-time)
+  (display " *** ")
+  (display elapsed-time)
+  )

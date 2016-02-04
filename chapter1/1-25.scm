@@ -5,11 +5,22 @@
          )
         (else (remainder (* base (expmod base (- exp 1) m)) m))
         )
-  )         
+  )
+         
+(define (expmod2 base exp m)
+  (remainder (fast-expt base exp) m)
+  )
 
 (define (fermat-test n)
   (define (try-it a)
     (= (expmod a n n) a))
+
+  (try-it (+ 1 (random (- n 1))))
+  )
+
+(define (fermat-test2 n)
+  (define (try-it a)
+    (= (expmod2 a n n) a))
 
   (try-it (+ 1 (random (- n 1))))
   )
@@ -21,4 +32,9 @@
         )
   )
 
-(define (square x) (* x x))
+(define (fast-prime2? n times)
+  (cond ((= times 0) true)
+        ((fermat-test2 n) (fast-prime2? n (- times 1)))
+        (else false)
+        )
+  )

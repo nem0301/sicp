@@ -6,8 +6,8 @@
 		)
 	(define (try guess)
 		(let ((next (f guess)))
-			(display next)
-			(newline)
+			; (display next)
+			; (newline)
 			(if (close-enough? guess next)
 				next
 				(try next)

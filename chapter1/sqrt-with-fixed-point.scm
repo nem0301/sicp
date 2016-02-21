@@ -1,6 +1,6 @@
 (load "fixed-point.scm")
-(load "average.scm")
+(load "average-damp.scm")
 
 (define (sqrt x)
-	(fixed-point (lambda (y) (average y (/ x y))) 1.0)
+	(fixed-point (average-damp (lambda (y) (/ x y))) 1.0)
 	)

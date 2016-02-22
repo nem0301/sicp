@@ -1,5 +1,5 @@
-(load "fixed-point.scm")
+	(load "fixed-point.scm")
 
 (define (logarithm)
-	(fixed-point (lambda (x) (/ (log 1000) (log x)) ) 10.0 )		
-	)
+  	(fixed-point (lambda (x) (/ (log 1000) (log x)) ) 10.0 )		
+  )

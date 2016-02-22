@@ -1,10 +1,10 @@
 (load "gcd.scm")
 
 (define (make-rat n d)
-  (let ( (g (gcd n d)) )
+  (let ((g ((if (< d 0) - +) (gcd n d))))
     (cons (/ n g) (/ d g))
-    ) 
-  ) 
+    )
+  )
 
 (define (numer x) (car x))
 (define (denom x) (cdr x))
@@ -49,7 +49,16 @@
   )
 
 (define x (make-rat 1 2))
-(define y (make-rat 2 4))
+(define y (make-rat -2 -4))
+(define z (make-rat -1 2))
+(define a (make-rat 2 -4))
+
+(define (test)
+  (print-rat x)
+  (print-rat y)
+  (print-rat z)
+  (print-rat a)
+  )
 
 
 

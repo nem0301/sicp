@@ -1,0 +1,13 @@
+(load "average-damp.scm")
+(load "fixed-point.scm")
+(load "repeated.scm")
+
+(define (get-max-pow n)
+  (define (iter p r)
+    (if (< (-n r) 0)
+        (- p 1)
+        (iter (+ p 1) (* r 2))
+        )              
+    )
+  (iter 1 2)
+  )

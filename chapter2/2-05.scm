@@ -1,13 +1,19 @@
-(define (exp base n)
-  (define (square x) (* x x))
-  
-  (define (iter x result)
-    (if (= 0 x)
-        result
-        (if (= (remainder x 2) 0)
-            (iter (/ x 2) (square result))            
-            (iter (- x 1) (* base result))
+(load "fast-expt.scm")
+
+(define (div n divisor)
+  (define (iter try-exp)
+    (if (= 0 (remainder n (fast-expt divisor try-exp)))
+        (iter (+ try-exp 1))
+        (- try-exp 1)
         )
     )
-  (iter n 1)
+  
+  (iter 1)
   )
+
+(define (cons a b) (* (fast-expt 2 a) (fast-expt 3 b)) )
+(define (car z) (div z 2))
+(define (cdr z) (div z 3))
+
+
+(define x (cons 2 2))

@@ -21,13 +21,14 @@
   )
 
 (define (div-interval x y)
-  (mul-interval x
-                (let ((l (if (= 0 (upper-bound y)) 0 (/ 1.0 (upper-bound y))) )
-                      (u (if (= 0 (lower-bound y)) 0 (/ 1.0 (lower-bound y))) )
-                      )
-                  (make-interval l u)                                                                               
-                  )
-                )
+  (if (>= 0 (* (lower-bound y) (upper-bound y)))
+      (error "Division error (interval spans 0)" y) 
+      (mul-interval x                
+                    (make-interval (/ 1.0 (upper-bound y))
+                                   (/ 1.0 (lower-bound y))
+                                   )
+                    )
+      )
   )
 
 (define (sub-interval x y)

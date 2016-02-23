@@ -19,6 +19,10 @@
       )
   )
 
+(define (last-pair x)
+  (list-ref x (- (length x) 1))  
+  )
+
 
 (define x '(1 2 3 4))
 (define y '(5 6 7 8))
@@ -30,4 +34,8 @@
   (display (length x))
   (newline)
   (display (append x y))
+  (newline)
+  (display (last-pair x))
+  (newline)
+  (display (last-pair y))
   )

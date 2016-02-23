@@ -42,6 +42,18 @@
   (display (upper-bound x))
   )
 
+(define (make-center-width c w)
+  (make-interval (- c w) (+ c w))
+  )
+
+(define (center i)
+  (/ (+ (lower-bound i) (upper-bound i)) 2)
+  )
+
+(define (width i)
+  (/ (- (lower-bound i) (upper-bound i)) 2)
+  )
+
 
 (define x (make-interval 1 4))
 (define y (make-interval 4 6))

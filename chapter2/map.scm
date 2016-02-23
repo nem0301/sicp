@@ -15,21 +15,6 @@
   (map (lambda (x) (* x x)) l)
   )
 
-(define (square-list-2 l)
-  (define (iter things answer)
-    (if (null? things)
-        answer
-        (iter (cdr things)
-;; This new-and-not-improved version conses the answer to the squared 
-;; value, but the answer is a list, so you'll end up with (list (list 
-;; ...) lastest-square).              
-              (cons answer (square (car things)))
-              )
-        )
-    )
-  (iter l nil)
-  )
-
 
 (define x (list 1 2 3 4))
 

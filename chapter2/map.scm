@@ -25,8 +25,28 @@
     )  
   )
 
+(define (scale-tree tree factor)
+  (cond ((null? tree) nil)
+        ((not (pair? tree)) (* tree factor))
+        (else (cons (scale-tree (car tree) factor)
+                    (scale-tree (cdr tree) factor))
+          )
+        )
+  )
+
+(define (scale-tree-with-map tree factor)
+  (map (lambda (sub-tree)
+         (if (pair? sub-tree)
+             (scale-tree-with-map sub-tree factor)
+             (* sub-tree factor)
+             )
+         )
+       tree
+       )  
+  )
 
 (define x (list 1 2 3 4))
+(define y (list 5 6 7 8))
 
 (define (test)
   (newline)
@@ -37,4 +57,8 @@
   (display (square-list x))
   (newline)
   (display (for-each (lambda (x) (* x x)) x) )
+  (newline)
+  (display (scale-tree (list (list x y) (list x y)) 2))
+  (newline)
+  (display (scale-tree-with-map (list (list x y) (list x y)) 2))
   )

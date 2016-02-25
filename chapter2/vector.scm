@@ -1,3 +1,4 @@
+(load "test.scm")
 (define nil (list ))
 
 (define (accumulate op initial sequence)
@@ -51,19 +52,6 @@
 
 (define m1 (list v1 v2 v3))
 (define m2 (list v3 v2 v1))
-
-(define (testing cases)
-  (cond ((null? cases)
-         (newline)
-         "succesfully end"
-         )
-        (else
-         (newline)
-         (display (car cases))
-         (testing (cdr cases)) 
-         )     
-      )
-  )
 
 (define (test)
   (testing (list (dot-product v1 v2)

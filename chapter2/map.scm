@@ -136,7 +136,7 @@
   )
 
 (define (map2 p seq)
-  (accumulate (lambda (x y) (cons (p x) y)) nil sequence)
+  (accumulate (lambda (x y) (cons (p x) y)) nil seq)
   )
 
 (define (append2 seq1 seq2)

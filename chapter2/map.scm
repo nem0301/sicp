@@ -85,6 +85,41 @@
       )
   )
 
+(define (filter predicate sequence)
+  (cond ((null? sequence) nil)
+        ((predicate (car sequence))
+         (cons (car sequence)
+               (filter predicate (cdr sequence))
+               )
+         )
+        (else (filter predicate (cdr sequence)))
+        )
+  )
+
+(define (accumulate op initial sequence)
+  (if (null? sequence)
+      initial
+      (op (car sequence) 
+          (accumulate op initial (cdr sequence)))
+      )
+  )
+
+(define (enumerate-interval low high)
+  (if (> low high)
+      nil
+      (cons low (enumerate-interval (+ low 1) high))
+      )  
+  )
+
+(define (enumerate-tree tree)
+  (cond ((null? tree) nil)
+        ((not (pair? tree)) (list tree))
+        (else (append (enumerate-tree (car tree)) 
+                      (enumerate-tree (cdr tree))))
+        )
+  )
+
+
 (define x (list 1 2 3 4))
 (define y (list 5 6 7 8))
 
@@ -109,4 +144,12 @@
   (display (tree-map (lambda (x) (* x x)) (list (list x y) (list x y))))
   (newline)
   (display (subsets (list 1 2 3)))
+  (newline)
+  (display (filter odd? (list 1 2 3 4 5 6 7 8 9)))
+  (newline)
+  (display (accumulate + 0 (list 2 3 4 1 23 4)))
+  (newline)
+  (display (enumerate-interval 7 10))
+  (newline)
+  (display (enumerate-tree (list (list x y) (list x y)))) 
   )

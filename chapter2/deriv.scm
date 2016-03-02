@@ -85,8 +85,10 @@
 ;                 (deriv '(* (* x y) (+ x 3)) 'x)
 ;                 (deriv '(** x 12) 'x)
 ;                 (deriv '(* x y (+ x 3)) 'x)
-                 (deriv '(x + (3 * (x + (y + 2))) 'x)
-                 )) 
+                 (deriv '(x + (3 * (x + (y + 2)))) 'x)
+                 (deriv '(x + 3 * (x + (y + 2))) 'x)
+                        
+                 ))
   )
 
 

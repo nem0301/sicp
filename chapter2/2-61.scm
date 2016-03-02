@@ -45,6 +45,18 @@
         ) 
   )
 
+
+(define (dup-element-of-set? x set)
+  (cond ((null? set) #f)
+        ((equal? x (car set)) #t)
+        (else (dup-element-of-set? x (cdr set)))
+        )
+  )
+
+(define (dup-adjoin-set x set)  
+  (cons x set)      
+  )
+
 (define (remove-element-set x set)
   (if (null? set)
       '()
@@ -53,6 +65,21 @@
           (cons (car set) (remove-element-set x (cdr set)))
           )
       )
+  )
+
+(define (dup-intersection-set set1 set2) 
+  (cond ((or (null? set1) (null? set2)) '())
+        ((dup-element-of-set? (car set1) set2)
+         (cons (car set1) 
+               (dup-intersection-set (cdr set1) 
+                                     (remove-element-set (car set1) set2)))
+         )
+        (else (dup-intersection-set (cdr set1) set2))
+        )
+  )
+
+(define (dup-union-set set1 set2)
+  (append set1 set2)
   )
 
 (define x '(1 2 3 4))
@@ -67,7 +94,8 @@
                  (element-of-set? 3 y)
                  (intersection-set x y)
                  (union-set x y)
-                 (remove-element-set 2 z)                 
+                 (remove-element-set 2 z)
+                 (dup-intersection-set z a)
                  )
            )
   )

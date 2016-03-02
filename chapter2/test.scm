@@ -1,4 +1,19 @@
 (define (testing cases)
+  (cond ((null? cases)
+         (newline)
+         "succesfully end"
+         )
+        (else
+         (newline)
+         (display (car cases))
+         (newline)
+         (testing (cdr cases)) 
+         )     
+      )
+  )
+
+
+(define (tree-testing cases)
   (define (iter l)
     (cond ((null? (cdr l))
            (newline)
@@ -12,20 +27,4 @@
            )
         )
     )
-  
-  (cond ((null? cases)
-         (newline)
-         "succesfully end"
-         )        
-        ((list? (car cases))
-         (iter (car cases))
-         (testing (cdr cases))
-         )
-        (else
-         (newline)
-         (display (car cases))
-         (newline)
-         (testing (cdr cases)) 
-         )     
-      )
   )

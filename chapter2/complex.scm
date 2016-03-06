@@ -4,7 +4,7 @@
 (define (square x) (* x x))
 
 (define (real-part z)
-  (cond ((rectangluar? z)
+  (cond ((rectangular? z)
          (real-part-rectangular (contents z))
          )
         ((polar? z) 
@@ -38,9 +38,9 @@
 
 (define (angle z)
   (cond ((rectangular? z)
-         (angle-recrangular (contents z))
+         (angle-rectangular (contents z))
          )
-        ((polar? )
+        ((polar? z)
          (angle-polar (contents z))
          )
         (else (error "Uknown type -- ANGLE" z))
@@ -61,7 +61,7 @@
   )
 
 (define (mul-complex z1 z2)
-  (make-from-mag-ang (* (magnitude z21) (magnitude z2))
+  (make-from-mag-ang (* (magnitude z1) (magnitude z2))
                      (+ (angle z1) (angle z2)))
   )
 
@@ -131,8 +131,21 @@
   (attach-tag 'polar (cons r a))
   )
 
+(define z1 (make-from-real-imag-rectangular 10 20))
+(define z2 (make-from-real-imag-rectangular 20 30))
+(define z3 (make-from-mag-ang-polar 10 20))
+(define z4 (make-from-mag-ang-polar 20 30))
+
+
 (define (test)
-  (testing (list 
+  (testing (list (add-complex z1 z2)
+                 (sub-complex z1 z2)
+                 (mul-complex z1 z2)
+                 (div-complex z1 z2)
+                 (add-complex z3 z4)
+                 (sub-complex z3 z4)
+                 (mul-complex z3 z4)
+                 (div-complex z3 z4)
                  )
            )
   )

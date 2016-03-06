@@ -1,6 +1,8 @@
 (load "test.scm")
 (load "sqrt-with-fixed-point.scm")
 
+;all trigonometric function's arguments and results are radian
+
 (define (square x) (* x x))
 
 (define (real-part z)
@@ -50,6 +52,8 @@
 (define (make-from-real-imag x y) (cons x y))
 (define (make-from-mag-ang r a) (cons (* r (cos a)) (* r (sin a))))
 
+
+; these result of calculation are rectangular result
 (define (add-complex z1 z2)
   (make-from-real-imag (+ (real-part z1) (real-part z2))
                        (+ (imag-part z1) (imag-part z2)))

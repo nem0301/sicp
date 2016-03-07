@@ -1,81 +1,140 @@
 (load "test.scm")
 
+; put and get
+(define global-array '())
+
+(define (make-entry k v) (list k v))
+(define (key entry) (car entry))
+(define (value entry) (cadr entry))
+
+(define (put op type item)
+  (define (put-helper k array)
+    (cond ((null? array) (list(make-entry k item)))
+          ((equal? (key (car array)) k) array)
+          (else (cons (car array) (put-helper k (cdr array))))))
+  (set! global-array (put-helper (list op type) global-array)))
+
+(define (get op type)
+  (define (get-helper k array)
+    (cond ((null? array) #f)
+          ((equal? (key (car array)) k) (value (car array)))
+          (else (get-helper k (cdr array)))))
+  (get-helper (list op type) global-array))
+
+
+; tag and contents
+(define (attach-tag type-tag contents)
+  (cons type-tag contents)
+  )
+(define (type-tag datum)
+  (if (pair? datum)
+      (car datum)
+      (error "Bad tagged datum -- TYPE-TAG" datum)
+      )
+  )
+(define (contents datum)
+  (if (pair? datum)
+      (cdr datum)
+      (error "Bad tagged datum -- CONTENTS" datum)
+      )
+  )
+
+; packages
+(define (install-sum-package)
+  (define (make-sum x y) (cons x y))
+  (define (addend s) (cadr s))
+  (define (augend s) (caddr s))
+  (define (deriv-sum s)
+    (make-sum (deriv (addend s)) (derive (augend s)))
+    )  
+  (define (tag x) (attach-tag '+ x))
+  (put 'deriv-package '(+) deriv-sum)
+  (put 'make-sum '+
+       (lambda (x y) (tag (make-sum x y))))
+  'done
+  )
+
+(define (make-sum x y)
+  ((get 'make-sum '+) x y))
+
+(define (install-product-package)
+  (define (make-product x y) (cons x y))
+  (define (multiplier p) (cadr p))
+  (define (multiplicand p) (caddr p))
+  (define (deriv-product p)
+    (make-sum (make-product (multiplier exp)
+                            (deriv (multiplicand exp) var)) 
+              (make-product (deriv (multiplier exp) var) 
+                            (multiplicand exp))))   
+  (define (tag x) (attach-tag '* x))
+  (put 'deriv-package '(*) deriv-product)
+  (put 'make-product '*
+       (lambda (x y) (tag (make-product x y))))
+  'done
+  )
+
+(define (make-product x y)
+  ((get 'make-product '*) x y))
+
+; application
+(define (apply-generic op . args)
+  (let ((type-tags (map type-tag args)))
+    (let ((proc (get op type-tags)))
+      (if proc
+          (apply proc (map contents args))
+          (error "No method for these types -- APPLY-GENERIC" 
+                 (list op type-tags)))
+      )
+    )
+  )
+(define (operator exp) (car exp))
+(define (operands exp) (cdr exp))
+(define (deriv-package x) (apply-generic 'deriv x))
+
 (define (deriv exp var)
   (cond ((number? exp) 0)
         ((variable? exp)
          (if (same-variable? exp var) 1 0) 
          )
-        ((sum? exp)
-         (make-sum (deriv (addend exp) var)
-                   (deriv (augend exp) var))
-         )
-        ((product? exp)
-         (make-sum (make-product (multiplier exp) (deriv (multiplicand exp) var))
-                       (make-product (deriv (multiplier exp) var) (multiplicand exp)))
-         )   
-        (else
-         (error "unknown expression type -- DERIV" exp)
-         )
+        (else ((get 'deriv-package (operator exp)) (operands exp) var))     
         )
   )
 
+; basic pridicate
 (define (=number? exp n)
   (and (number? exp) (= exp n))
   )
-
 (define (variable? exp)
   (symbol? exp)
   )
-
 (define (same-variable? exp1 exp2)
   (and (variable? exp1) (variable? exp2) (eq? exp1 exp2))
-  )  
-
-
-(define (make-sum exp1 exp2)
-  (cond ((=number? exp1 0) exp2)
-        ((=number? exp2 0) exp1)
-        ((and (number? exp1) (number? exp2)) (+ exp1 exp2))
-        (else (list exp1 '+ exp2))
-        )
-  )  
-
-
-(define (make-product exp1 exp2)
-  (cond ((or (=number? exp1 0) (=number? exp2 0)) 0)
-        ((=number? exp1 1) exp2)
-        ((=number? exp2 1) exp1)
-        ((and (number? exp1) (number? exp2)) (* exp1 exp2))        
-        (else (list exp1 '* exp2))
-        )   
   )
 
-
+; for sum
 (define (sum? exp)
   (and (pair? exp) (eq? (cadr exp) '+))
   )
-
 (define (addend exp)
   (car exp) 
   )
-
 (define (augend exp)
   (caddr exp)
   )
 
-
+; for product
 (define (product? exp)
   (and (pair? exp) (eq? (cadr exp) '*))
   )
-
 (define (multiplier exp)
   (car exp) 
   )
-
 (define (multiplicand exp)
   (caddr exp)
   )
 
+(install-sum-package)
+(install-product-package)
 
 
 (define (test)

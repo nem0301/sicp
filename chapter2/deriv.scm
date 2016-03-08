@@ -132,7 +132,7 @@
          (newline)
          )
         (else
-         (display (cdr (car l)))
+         (display (car l))
          (newline)
          (deploy (cdr l)) 
           )

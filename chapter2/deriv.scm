@@ -18,7 +18,15 @@
   (define (get-helper k array)
     (cond ((null? array) #f)
           ((equal? (key (car array)) k) (value (car array)))
-          (else (get-helper k (cdr array)))))
+          (else 
+            (display k)
+            (newline)
+            (display (key (car array)))
+            (newline)
+            (newline)
+            (get-helper k (cdr array))
+            )
+          ))
   (get-helper (list op type) global-array))
 
 
@@ -41,14 +49,14 @@
 
 ; packages
 (define (install-sum-package)
-  (define (make-sum x y) (cons x y))
+  (define (make-sum x y) (list '+ x y))
   (define (addend s) (cadr s))
   (define (augend s) (caddr s))
   (define (deriv-sum s)
     (make-sum (deriv (addend s)) (derive (augend s)))
     )  
   (define (tag x) (attach-tag '+ x))
-  (put 'deriv-package '(+) deriv-sum)
+  (put 'deriv '(+) deriv-sum)
   (put 'make-sum '+
        (lambda (x y) (tag (make-sum x y))))
   'done
@@ -58,16 +66,16 @@
   ((get 'make-sum '+) x y))
 
 (define (install-product-package)
-  (define (make-product x y) (cons x y))
+  (define (make-product x y) (list '* x y))
   (define (multiplier p) (cadr p))
   (define (multiplicand p) (caddr p))
   (define (deriv-product p)
-    (make-sum (make-product (multiplier exp)
-                            (deriv (multiplicand exp) var)) 
-              (make-product (deriv (multiplier exp) var) 
-                            (multiplicand exp))))   
+    (make-sum (make-product (multiplier p)
+                            (deriv (multiplicand p))) 
+              (make-product (deriv (multiplier p)) 
+                            (multiplicand p))))   
   (define (tag x) (attach-tag '* x))
-  (put 'deriv-package '(*) deriv-product)
+  (put 'deriv '(*) deriv-product)
   (put 'make-product '*
        (lambda (x y) (tag (make-product x y))))
   'done
@@ -89,16 +97,16 @@
   )
 (define (operator exp) (car exp))
 (define (operands exp) (cdr exp))
-(define (deriv-package x) (apply-generic 'deriv x))
+(define (deriv x) (apply-generic 'deriv x))
 
-(define (deriv exp var)
-  (cond ((number? exp) 0)
-        ((variable? exp)
-         (if (same-variable? exp var) 1 0) 
-         )
-        (else ((get 'deriv-package (operator exp)) (operands exp) var))     
-        )
-  )
+;(define (deriv exp var)
+;  (cond ((number? exp) 0)
+;        ((variable? exp)
+;         (if (same-variable? exp var) 1 0) 
+;         )
+;        (else ((get 'deriv (operator exp)) (operands exp) var))     
+;        )
+;  )
 
 ; basic pridicate
 (define (=number? exp n)
@@ -111,31 +119,27 @@
   (and (variable? exp1) (variable? exp2) (eq? exp1 exp2))
   )
 
-; for sum
-(define (sum? exp)
-  (and (pair? exp) (eq? (cadr exp) '+))
-  )
-(define (addend exp)
-  (car exp) 
-  )
-(define (augend exp)
-  (caddr exp)
-  )
-
-; for product
-(define (product? exp)
-  (and (pair? exp) (eq? (cadr exp) '*))
-  )
-(define (multiplier exp)
-  (car exp) 
-  )
-(define (multiplicand exp)
-  (caddr exp)
-  )
-
 (install-sum-package)
 (install-product-package)
 
+(define x '((+) x y))
+
+(display (operator x))
+(display (operands x))
+
+(define (deploy l)
+  (cond ((null? l)
+         (newline)
+         )
+        (else
+         (display (cdr (car l)))
+         (newline)
+         (deploy (cdr l)) 
+          )
+        )
+  )
+(newline)
+(deploy global-array)
 
 (define (test)
   (testing (list 
@@ -144,8 +148,12 @@
 ;                 (deriv '(* (* x y) (+ x 3)) 'x)
 ;                 (deriv '(** x 12) 'x)
 ;                 (deriv '(* x y (+ x 3)) 'x)
-                 (deriv '(x + (3 * (x + (y + 2)))) 'x)
-                 (deriv '(x + 3 * (x + (y + 2))) 'x)
+;                 ((deriv '(x + (3 * (x + (y + 2))))) 'x)
+;                 ((deriv '(x + 3 * (x + (y + 2)))) 'x)
+;                 ((deriv '(+ x x)) 'x)
+                 (get 'deriv (operator x))
+;                 ((get 'deriv (operator x)) (operands x))
+                 
                         
                  ))
   )

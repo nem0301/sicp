@@ -15,11 +15,5 @@
   (define (get-helper k array)
     (cond ((null? array) #f)
           ((equal? (key (car array)) k) (value (car array)))
-          (else 
-            (display k)
-            (newline)
-            (display (key (car array)))
-            (newline)
-            (newline)
-            (get-helper k (cdr array)))))
+          (else (get-helper k (cdr array)))))
   (get-helper (list op type) global-array))

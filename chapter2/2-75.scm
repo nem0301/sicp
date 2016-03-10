@@ -150,7 +150,7 @@
                  (cons (magnitude (div-complex z1 z2)) 
                        (radian-to-degree (angle (div-complex z1 z2))))
                  "------------"
-                 (cons (magnitude (add-complex z3 z4))
+                 (cons (magnitude (add-complex z3 z4)) 
                        (radian-to-degree (angle (add-complex z3 z4))))
                  (cons (magnitude (sub-complex z3 z4)) 
                        (radian-to-degree (angle (sub-complex z3 z4))))

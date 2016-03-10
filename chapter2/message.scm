@@ -1,61 +1,7 @@
 (load "test.scm")
 (load "sqrt-with-fixed-point.scm")
-(load "putget.scm")
-(load "tag.scm")
 
 (define (square x) (* x x))
-
-;Ben's
-(define (install-rectangular-package)
-  ;internal procedures
-  (define (real-part z) (car z))
-  (define (imag-part z) (cdr z))
-  (define (make-from-real-imag x y) (cons x y))
-  (define (magnitude z)
-    (sqrt (+ (square (real-part z))
-             (square (imag-part z)))))
-  (define (angle z)
-    (atan (imag-part z) (real-part z)))
-  (define (make-from-mag-ang r a)
-    (cons (* r (cos a)) (* r (sin a))))
-  ;interface to the rest of the system
-  (define (tag x) (attach-tag 'rectangular x))
-  (put 'real-part '(rectangular) real-part)
-  (put 'imag-part '(rectangular) imag-part)
-  (put 'magnitude '(rectangular) magnitude)
-  (put 'angle '(rectangular) angle)
-  (put 'make-from-real-imag 'rectangular
-       (lambda (x y) (tag (make-from-real-imag x y))))
-  (put 'make-from-mag-ang 'rectangular
-       (lambda (r a) (tag (make-from-mag-ang r a))))
-  'done  
-  )
-
-;Alyssa
-(define (install-polar-package)
-  ;internal procedures
-  (define (magnitude z) (car z))
-  (define (angle z) (cdr z))
-  (define (make-from-mag-ang r a) (cons r a))
-  (define (real-part z)
-    (* (magnitude z) (cos (angle z))))
-  (define (imag-part z)
-    (* (magnitude z) (sin (angle z))))
-  (define (make-from-real-imag x y)
-    (cons (sqrt (+ (square x) (square y))) (atan y x)))
-  ;interface to the rest of the system
-  (define (tag x) (attach-tag 'polar x))
-  (put 'real-part '(polar) real-part)
-  (put 'imag-part '(polar) imag-part)
-  (put 'magnitude '(polar) magnitude)
-  (put 'angle '(polar) angle)
-  (put 'make-from-real-imag 'polar
-       (lambda (x y) (tag (make-from-real-imag x y))))
-  (put 'make-from-mag-ang 'polar
-       (lambda (r a) (tag (make-from-mag-ang r a))))
-  'done  
-  )
-
 (define (apply-generic op arg)
   (arg op)
   )
@@ -112,9 +58,6 @@
 (define (radian-to-degree x)
   (* x 57.2958)
   )
-
-;(install-rectangular-package)
-;(install-polar-package)
 
 (define z1 (make-from-real-imag 10 20))
 (define z2 (make-from-real-imag 20 30))

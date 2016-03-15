@@ -282,7 +282,7 @@
                  (add x1 y1)
                  (add x1 z1)
                  (add z1 y1)
-                 (add z1 x1)
+                 (add z6 x1)
                  ))
   )
 

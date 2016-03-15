@@ -16,7 +16,7 @@
   (let ((type-tags (map type-tag args))) 
      (let ((proc (get op type-tags))) 
        (if proc                              
-           (drop (apply proc (map contents args)))                                   
+           (apply proc (map contents args))                                   
            (if (= (length args) 2) 
                (let ((a1 (car args)) 
                      (a2 (cadr args)))                   
@@ -100,8 +100,7 @@
                                             (denom x)) 
                                          1.0) 
                                       0)))
-  (put 'project 'rational 
-       (lambda (x) (make-scheme-number (round (/ (numer x) (denom x))))))     
+       
   (put 'add '(rational rational) 
        (lambda (x y) (tag (add-rat x y))))
   (put 'sub '(rational rational) 
@@ -207,12 +206,7 @@
   (define (tag z) (attach-tag 'complex z))
   (put 'equ? '(complex complex) equ?)
   (put '=zero? '(complex) =zero?)
-  (put 'project 'complex 
-       (lambda (z) (let ((real (real-part z))
-                         (imag (imag-part z)))      
-                     (let ((rat (rationalize (inexact->exact real) 1/100))) 
-                       (make-rational (numerator rat) 
-                                      (denominator rat))))))
+   
   (put 'add '(complex complex)
        (lambda (z1 z2) (tag (add-complex z1 z2))))
   (put 'sub '(complex complex)
@@ -237,15 +231,6 @@
 (define (=zero? x) (apply-generic '=zero? x))
 
 (define (raise x) (apply-generic 'raise x))
-(define (drop x) 
-  (let ((project-proc (get 'project (type-tag x)))) 
-    (if project-proc 
-        (let ((project-number (project-proc (contents x)))) 
-          (if (equ? project-number (raise project-number)) 
-              (drop project-number) 
-              x)) 
-        x))) 
-
 
 (install-scheme-number-package)
 (install-rational-package)

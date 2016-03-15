@@ -15,8 +15,8 @@
   
   (let ((type-tags (map type-tag args))) 
      (let ((proc (get op type-tags))) 
-       (if proc 
-           (apply proc (map contents args)) 
+       (if proc                              
+           (drop (apply proc (map contents args)))                                   
            (if (= (length args) 2) 
                (let ((a1 (car args)) 
                      (a2 (cadr args)))                   
@@ -64,7 +64,8 @@
   (define (equ? x y) 
     (= (* (numer x) (denom y)) (* (numer y) (denom x))))
   (define (=zero? rat)
-    (zero? (numer rat)))  
+    (zero? (numer rat)))
+
   (define (numer x) (car x))
   (define (denom x) (cdr x))
   (define (make-rat n d)
@@ -98,7 +99,9 @@
          (make-complex-from-real-imag (* (/ (numer x) 
                                             (denom x)) 
                                          1.0) 
-                                      0)))       
+                                      0)))
+  (put 'project 'rational 
+       (lambda (x) (make-scheme-number (round (/ (numer x) (denom x))))))     
   (put 'add '(rational rational) 
        (lambda (x y) (tag (add-rat x y))))
   (put 'sub '(rational rational) 
@@ -170,12 +173,13 @@
   )
 
 (define (install-complex-package)
-  ; imported procedures from rectangular and polar package
   (define (equ? z1 z2)
     (and (= (real-part z1) (real-part z2)) 
          (= (imag-part z1) (imag-part z2))))
   (define (=zero? z)
-    (and (zero? (real-part z)) (zero? (imag-part z))))
+    (and (zero? (real-part z)) (zero? (imag-part z))))  
+  
+  ; imported procedures from rectangular and polar package
   (define (make-from-real-imag x y)
     ((get 'make-from-real-imag 'rectangular) x y))
   (define (make-from-mag-ang r a)
@@ -202,7 +206,13 @@
   ; interface to rest of the system
   (define (tag z) (attach-tag 'complex z))
   (put 'equ? '(complex complex) equ?)
-  (put '=zero? '(complex) =zero?)  
+  (put '=zero? '(complex) =zero?)
+  (put 'project 'complex 
+       (lambda (z) (let ((real (real-part z))
+                         (imag (imag-part z)))      
+                     (let ((rat (rationalize (inexact->exact real) 1/100))) 
+                       (make-rational (numerator rat) 
+                                      (denominator rat))))))
   (put 'add '(complex complex)
        (lambda (z1 z2) (tag (add-complex z1 z2))))
   (put 'sub '(complex complex)
@@ -217,6 +227,7 @@
        (lambda (r a) (tag (make-from-mag-ang r a))))
   'done
   )
+
 (define (make-complex-from-real-imag x y)
   ((get 'make-from-real-imag 'complex) x y))
 (define (make-complex-from-mag-ang r a)
@@ -226,6 +237,14 @@
 (define (=zero? x) (apply-generic '=zero? x))
 
 (define (raise x) (apply-generic 'raise x))
+(define (drop x) 
+  (let ((project-proc (get 'project (type-tag x)))) 
+    (if project-proc 
+        (let ((project-number (project-proc (contents x)))) 
+          (if (equ? project-number (raise project-number)) 
+              (drop project-number) 
+              x)) 
+        x))) 
 
 
 (install-scheme-number-package)
@@ -244,10 +263,15 @@
   (define y2 (make-rational 7 13))
   (define y3 (make-rational 7 13))
   (define y4 (make-rational 0 1))
+  (define y5 (make-rational 10 5))
   (define z1 (make-complex-from-real-imag 10 20))
   (define z2 (make-complex-from-real-imag 20 30))
   (define z3 (make-complex-from-real-imag 20 30))
   (define z4 (make-complex-from-real-imag 0 0))
+  (define z5 (make-complex-from-real-imag 2.5 0))
+  (define z6 (make-complex-from-real-imag 2 0))
+  
+  (display (add x1 y1))
   
   (testing (list (deploy global-array)
                  z1 z2 
@@ -273,7 +297,7 @@
                  (add x1 y1)
                  (add x1 z1)
                  (add z1 y1)
-                 (add z1 x1)                 
+                 (add z1 x1)
                  ))
   )
 

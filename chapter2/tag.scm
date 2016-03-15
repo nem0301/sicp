@@ -8,6 +8,8 @@
 (define (type-tag datum)
   (cond ((number? datum)
          'scheme-number)
+        ((boolean? datum)
+         'boolean)
         ((pair? datum)
          (car datum))
         (else (error "Bad tagged datum -- TYPE-TAG" datum))

@@ -28,6 +28,8 @@
        (lambda (x y) (tag (* x y))))
   (put 'div '(scheme-number scheme-number)
        (lambda (x y) (tag (/ x y))))
+  (put 'negate '(scheme-number) 
+       (lambda (x) (tag (- x))))
   (put 'make 'scheme-number
        (lambda (x) (tag x)))  
   'done  
@@ -80,9 +82,12 @@
   (put 'add '(polynomial polynomial)
        (lambda (p1 p2) (tag (add-poly p1 p2))))
   (put 'sub '(polynomial polynomial)
-       (lambda (p1 p2) (tag (sub-poly p1 p2))))
+       (lambda (p1 p2) (tag (add-poly p1 (contents (negate (tag p2)))))))
   (put 'mul'(polynomial polynomial)
        (lambda (p1 p2) (tag (mul-poly p1 p2))))
+  (put 'negate '(polynomial)
+       (lambda (p) (tag (make-poly (variable p)
+                                   (negate-terms (term-list p))))))  
   (put 'make 'polynomial
        (lambda (var terms) (tag (make-poly var terms))))
   'done
@@ -158,6 +163,10 @@
       )
   )
 
+(define (negate-terms l)
+  (map (lambda (t) (make-term (order t) (- (coeff t)))) l)
+  )
+
 (define (add x1 x2)
   (apply-generic 'add x1 x2))
 
@@ -166,6 +175,9 @@
 
 (define (mul x1 x2)
   (apply-generic 'mul x1 x2))
+
+(define (negate x)
+  (apply-generic 'negate x))
 
 (install-scheme-number-package)
 (install-polynomial-package)
